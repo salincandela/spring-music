@@ -13,6 +13,7 @@ import java.util.List;
 
 @RestController
 public class InfoController {
+
     @Autowired(required = false)
     private Cloud cloud;
 

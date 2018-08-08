@@ -1,4 +1,4 @@
-package org.cloudfoundry.samples.music.repositories.jpa;
+package org.cloudfoundry.samples.music.repositories;
 
 import org.cloudfoundry.samples.music.domain.Album;
 import org.springframework.context.annotation.Profile;
