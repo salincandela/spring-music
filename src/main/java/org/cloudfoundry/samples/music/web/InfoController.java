@@ -1,27 +1,28 @@
 package org.cloudfoundry.samples.music.web;
 
+import org.cloudfoundry.samples.music.configuration.ServicesInfo;
 import org.cloudfoundry.samples.music.domain.ApplicationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.Cloud;
 import org.springframework.cloud.service.ServiceInfo;
 import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Collection;
+import java.util.stream.Collectors;
 
 @RestController
 public class InfoController {
 
-    @Autowired(required = false)
-    private Cloud cloud;
+    private final Environment springEnvironment;
 
-    private Environment springEnvironment;
+    private final ServicesInfo servicesInfo;
 
     @Autowired
-    public InfoController(Environment springEnvironment) {
+    public InfoController(Environment springEnvironment, ServicesInfo servicesInfo) {
         this.springEnvironment = springEnvironment;
+        this.servicesInfo = servicesInfo;
     }
 
     @RequestMapping(value = "/appinfo")
@@ -29,26 +30,18 @@ public class InfoController {
         return new ApplicationInfo(springEnvironment.getActiveProfiles(), getServiceNames());
     }
 
-    @RequestMapping(value = "/service")
-    public List<ServiceInfo> showServiceInfo() {
-        if (cloud != null) {
-            return cloud.getServiceInfos();
-        } else {
-            return new ArrayList<>();
-        }
-    }
-
     private String[] getServiceNames() {
-        if (cloud != null) {
-            final List<ServiceInfo> serviceInfos = cloud.getServiceInfos();
-
-            List<String> names = new ArrayList<>();
-            for (ServiceInfo serviceInfo : serviceInfos) {
-                names.add(serviceInfo.getId());
-            }
-            return names.toArray(new String[names.size()]);
-        } else {
-            return new String[]{};
-        }
+        Collection<ServiceInfo> services = servicesInfo.getServices();
+        String[] response = new String[services.size()];
+        return services.stream()
+                .map(ServiceInfo::getId)
+                .collect(Collectors.toCollection(ArrayList::new))
+                .toArray(response);
     }
+
+    @RequestMapping(value = "/service")
+    public Collection<ServiceInfo> showServiceInfo() {
+        return servicesInfo.getServices();
+    }
+
 }

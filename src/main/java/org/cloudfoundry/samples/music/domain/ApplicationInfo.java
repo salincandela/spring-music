@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @EqualsAndHashCode
 public class ApplicationInfo {
+
     private String[] profiles;
     private String[] services;
 }
