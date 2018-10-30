@@ -2,6 +2,7 @@ package org.cloudfoundry.samples.music.web;
 
 import org.cloudfoundry.samples.music.domain.Album;
 import org.cloudfoundry.samples.music.repositories.JpaAlbumRepository;
+import org.cloudfoundry.samples.music.web.support.NoAlbumFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +41,13 @@ public class AlbumController {
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Album getById(@PathVariable String id) {
+    public Album getById(@PathVariable Long id) {
         logger.info("Getting album " + id);
-        return repository.findById(id).orElse(null);
+        return repository.findById(id).orElseThrow(NoAlbumFoundException::new);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
-    public void deleteById(@PathVariable String id) {
+    public void deleteById(@PathVariable Long id) {
         logger.info("Deleting album " + id);
         repository.deleteById(id);
     }
