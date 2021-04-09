@@ -3,4 +3,4 @@ applications:
 - name: spring-music
   memory: 1G
   random-route: true
-  path: target/spring-petclinic-2.3.0.BUILD-SNAPSHOT.jar
+  path: target/spring-music-1.0.0-SNAPSHOT.jar
